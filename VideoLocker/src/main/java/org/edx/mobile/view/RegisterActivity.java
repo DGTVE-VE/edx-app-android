@@ -117,6 +117,7 @@ public class RegisterActivity extends BaseFragmentActivity
         optionalFieldsLayout = (LinearLayout) findViewById(R.id.optional_fields_layout);
         agreementLayout = (LinearLayout) findViewById(R.id.layout_agreement);
         final TextView optional_text = (TextView) findViewById(R.id.optional_field_tv);
+        optional_text.setTextColor(optional_text.getLinkTextColors().getDefaultColor());
         optional_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
