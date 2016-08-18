@@ -1,5 +1,4 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <!-- the theme applied to the application or activity -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -35,17 +34,29 @@
              any of the other sizes anywhere currently, it doesn't matter for now. -->
         <item name="android:progressBarStyle">@style/edX.Widget.ProgressBar</item>
         <item name="android:progressBarStyleSmall">@style/edX.Widget.ProgressBar.Small</item>
-        <item name="android:progressBarStyleSmallTitle">@style/edX.Widget.ProgressBar.Small.Title</item>
+        <item name="android:progressBarStyleSmallTitle">@style/edX.Widget.ProgressBar.Small.Title
+        </item>
         <item name="android:progressBarStyleLarge">@style/edX.Widget.ProgressBar.Large</item>
         <item name="android:progressBarStyleInverse">@style/edX.Widget.ProgressBar.Inverse</item>
-        <item name="android:progressBarStyleSmallInverse">@style/edX.Widget.ProgressBar.Small.Inverse</item>
-        <item name="android:progressBarStyleLargeInverse">@style/edX.Widget.ProgressBar.Large.Inverse</item>
+        <item name="android:progressBarStyleSmallInverse">
+            @style/edX.Widget.ProgressBar.Small.Inverse
+        </item>
+        <item name="android:progressBarStyleLargeInverse">
+            @style/edX.Widget.ProgressBar.Large.Inverse
+        </item>
+    </style>
+
+    <style name="MyToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.NoActionBar.TranslucentStatusBar"></style>
 
     <style name="AppTheme.Launch" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/launch_background</item>
@@ -61,8 +72,7 @@
         <item name="actionBarStyle">@style/MyActionBar.NoShadow</item>
     </style>
 
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
-    </style>
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog"></style>
 
     <style name="AppTheme.Dialog.NoTitle" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowActionBar">false</item>
@@ -210,8 +220,10 @@
         <item name="android:layout_width">@dimen/video_player_bottom_control_width</item>
         <item name="android:layout_height">@dimen/video_player_bottom_control_height</item>
         <item name="android:layout_marginLeft">@dimen/video_player_bottom_control_left_margin</item>
-        <item name="android:layout_marginStart">@dimen/video_player_bottom_control_left_margin</item>
-        <item name="android:layout_marginRight">@dimen/video_player_bottom_control_right_margin</item>
+        <item name="android:layout_marginStart">@dimen/video_player_bottom_control_left_margin
+        </item>
+        <item name="android:layout_marginRight">@dimen/video_player_bottom_control_right_margin
+        </item>
         <item name="android:layout_marginEnd">@dimen/video_player_bottom_control_right_margin</item>
         <item name="iconColor">@color/edx_grayscale_neutral_white_t</item>
     </style>
@@ -488,7 +500,7 @@
         <item name="indeterminateIconColor">@color/edx_grayscale_neutral_white_t</item>
     </style>
 
-    <style name="edX.Widget.ProgressBar.Small.Title"/>
+    <style name="edX.Widget.ProgressBar.Small.Title" />
 
     <!-- Unfortunately, TabLayout doesn't define a global theme
          attribute for it's default style, so this would need to be
