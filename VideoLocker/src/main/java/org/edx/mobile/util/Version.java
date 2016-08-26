@@ -2,6 +2,7 @@ package org.edx.mobile.util;
 
 import android.support.annotation.NonNull;
 
+import java.text.ParseException;
 import java.util.Arrays;
 
 /**
@@ -26,11 +27,10 @@ public class Version implements Comparable<Version> {
      *                tokens will be parsed as major, minor, and patch version
      *                numbers respectively, and any further tokens will be
      *                discarded.
-     * @throws NumberFormatException If one or more of the first three present
-     *                               dot-separated tokens contain non-numeric
-     *                               characters.
+     * @throws ParseException If one or more of the first three present dot-
+     *                        separated tokens contain non-numeric characters.
      */
-    public Version(@NonNull String version) throws NumberFormatException {
+    public Version(@NonNull String version) throws ParseException {
         final String[] numberStrings = version.split("\\.");
         final int versionsCount = Math.min(NUMBERS_COUNT, numberStrings.length);
         for (int i = 0; i < versionsCount; i++) {
@@ -38,14 +38,19 @@ public class Version implements Comparable<Version> {
             /* Integer.parseInt() parses a string as a signed integer value, and
              * there is no available method for parsing as unsigned instead.
              * Therefore, we first check the first character manually to see
-             * whether it's a plus or minus sign, and throw a
-             * NumberFormatException if it is.
+             * whether it's a plus or minus sign, and throw a ParseException if
+             * it is.
              */
             final char firstChar = numberString.charAt(0);
             if (firstChar == '-' || firstChar == '+') {
-                throw new NumberFormatException();
+                throw new VersionParseException(0);
             }
-            numbers[i] = Integer.parseInt(numberString);
+            try {
+                numbers[i] = Integer.parseInt(numberString);
+            } catch (NumberFormatException e) {
+                // Rethrow as a checked ParseException
+                throw new VersionParseException(version.indexOf(numberString));
+            }
         }
     }
 
@@ -103,5 +108,23 @@ public class Version implements Comparable<Version> {
     @Override
     public int hashCode() {
         return Arrays.hashCode(numbers);
+    }
+
+    /**
+     * Convenience subclass of {@link ParseException}, with the detail
+     * message already provided.
+     */
+    private static class VersionParseException extends ParseException {
+        /**
+         * Constructs a new instance of this class with its stack
+         * trace, detail message and the location of the error filled
+         * in.
+         *
+         * @param location The location of the token at which the parse
+         *                 exception occurred.
+         */
+        public VersionParseException(final int location) {
+            super("Token couldn't be parsed as a valid number.", location);
+        }
     }
 }

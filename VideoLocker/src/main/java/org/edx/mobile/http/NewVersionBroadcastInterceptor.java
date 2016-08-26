@@ -7,6 +7,7 @@ import org.edx.mobile.util.DateUtil;
 import org.edx.mobile.util.Version;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import okhttp3.Interceptor;
@@ -41,21 +42,26 @@ public class NewVersionBroadcastInterceptor implements Interceptor {
     public Response intercept(final Chain chain) throws IOException {
         final Response response = chain.proceed(chain.request());
 
-        final Version appLatestVersion; {
+        final Version appLatestVersion;
+        final boolean isNewerVersionAvailable; {
             final String appLatestVersionString = response.header(HEADER_APP_LATEST_VERSION);
             if (appLatestVersionString == null) {
                 appLatestVersion = null;
+                isNewerVersionAvailable = false;
             } else {
+                final Version currentVersion;
                 try {
                     appLatestVersion = new Version(appLatestVersionString);
-                } catch (NumberFormatException e) {
-                    /* If the version number doesn't correspond to the
+                    currentVersion = new Version(BuildConfig.VERSION_NAME);
+                } catch (ParseException e) {
+                    /* If the version numbers don't correspond to the
                      * schema, then discard the data and just return the
                      * response.
                      */
                     logger.error(e);
                     return response;
                 }
+                isNewerVersionAvailable = appLatestVersion.compareTo(currentVersion) > 0;
             }
         }
 
@@ -66,8 +72,7 @@ public class NewVersionBroadcastInterceptor implements Interceptor {
 
         // If any of these properties is available and valid, then broadcast the
         // event with the information we have.
-        if (isUnsupported || lastSupportedDate != null || appLatestVersion != null &&
-                appLatestVersion.compareTo(new Version(BuildConfig.VERSION_NAME)) > 0) {
+        if (isNewerVersionAvailable || isUnsupported || lastSupportedDate != null) {
             NewVersionAvailableEvent.post(appLatestVersion, lastSupportedDate, isUnsupported);
         }
 
