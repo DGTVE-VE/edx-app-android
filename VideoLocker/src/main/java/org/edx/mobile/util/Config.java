@@ -399,6 +399,7 @@ public class Config {
         final List<Uri> uris = new ArrayList<>(uriStrings.size());
         for (final String uriString : uriStrings) {
             if (uriString != null) {
+                // Replace the 'application_id' token with the actual application ID.
                 uris.add(Uri.parse(Phrase.from(uriString)
                         .put("application_id", BuildConfig.APPLICATION_ID)
                         .format()
