@@ -15,7 +15,7 @@ public class VersionTest {
      * correctly, setting the major, minor, and patch version properties.
      */
     @Test
-    public void newInstance_withTwoDotRelease_isParsedCorrectly() throws ParseException {
+    public void testNewInstance_withTwoDotRelease_isParsedCorrectly() throws ParseException {
         final Version version = new Version("1.26.6");
         assertThat(version.getMajorVersion()).isEqualTo(1);
         assertThat(version.getMinorVersion()).isEqualTo(26);
@@ -27,7 +27,7 @@ public class VersionTest {
      * correctly, setting the major and minor version properties.
      */
     @Test
-    public void newInstance_withOneDotRelease_isParsedCorrectly() throws ParseException {
+    public void testNewInstance_withOneDotRelease_isParsedCorrectly() throws ParseException {
         assertThat(new Version("1.26")).isEqualTo(new Version("1.26.0"));
     }
 
@@ -36,7 +36,7 @@ public class VersionTest {
      * of a single number) is parsed correctly, setting only the major version property.
      */
     @Test
-    public void newInstance_withZeroDotRelease_isParsedCorrectly() throws ParseException {
+    public void testNewInstance_withZeroDotRelease_isParsedCorrectly() throws ParseException {
         assertThat(new Version("1")).isEqualTo(new Version("1.0.0"));
     }
 
@@ -45,16 +45,16 @@ public class VersionTest {
      * setting the supported version properties, and discarding the extra tokens.
      */
     @Test
-    public void newInstance_withExtraTokens_isParsedCorrectly() throws ParseException {
+    public void testNewInstance_withExtraTokens_isParsedCorrectly() throws ParseException {
         assertThat(new Version("1.26.6.alpha1")).isEqualTo(new Version("1.26.6"));
     }
 
     /**
-     * Verify that a new instance created with non-numeric characters in
-     * one of the first three tokens throws a {@link ParseException}.
+     * Verify that a new instance created with non-numeric characters in one of the first
+     * three tokens throws a {@link ParseException}.
      */
     @Test(expected = ParseException.class)
-    public void newInstance_withNonNumericTokens_ThrowsException() throws ParseException {
+    public void testNewInstance_withNonNumericTokens_ThrowsException() throws ParseException {
         new Version("1.26.alpha1");
     }
 
@@ -63,7 +63,7 @@ public class VersionTest {
      * if passed another instance created with an identical version string.
      */
     @Test
-    public void equals_withSameVersion_isTrue() throws ParseException {
+    public void testEquals_withSameVersion_isTrue() throws ParseException {
         assertThat(new Version("2.0.0")).isEqualTo(new Version("2.0.0"));
     }
 
@@ -72,7 +72,7 @@ public class VersionTest {
      * if passed another instance created with a different version string.
      */
     @Test
-    public void equals_withDifferentVersion_isFalse() throws ParseException {
+    public void testEquals_withDifferentVersion_isFalse() throws ParseException {
         assertThat(new Version("2.0.0")).isNotEqualTo(new Version("1.0.0"));
     }
 
@@ -81,7 +81,7 @@ public class VersionTest {
      * if passed another instance created with an identical version string.
      */
     @Test
-    public void compareTo_withSameVersion_isEqual() throws ParseException {
+    public void testCompareTo_withSameVersion_isEqual() throws ParseException {
         assertThat(new Version("2.0.0")).isEqualByComparingTo(new Version("2.0.0"));
     }
 
@@ -90,7 +90,7 @@ public class VersionTest {
      * integer if passed another instance created with a lesser version string.
      */
     @Test
-    public void compareTo_withEarlierVersion_isGreaterThan() throws ParseException {
+    public void testCompareTo_withEarlierVersion_isGreaterThan() throws ParseException {
         assertThat(new Version("2.0.0")).isGreaterThan(new Version("1.0.0"));
     }
 
@@ -99,7 +99,7 @@ public class VersionTest {
      * integer if passed another instance created with a larger version string.
      */
     @Test
-    public void compareTo_withLaterVersion_isLessThan() throws ParseException {
+    public void testCompareTo_withLaterVersion_isLessThan() throws ParseException {
         assertThat(new Version("1.0.0")).isLessThan(new Version("2.0.0"));
     }
 
@@ -108,7 +108,7 @@ public class VersionTest {
      * another instance created with a more precise, but identical, version string.
      */
     @Test
-    public void compareTo_withMorePreciseSameVersion_isEqual() throws ParseException {
+    public void testCompareTo_withMorePreciseSameVersion_isEqual() throws ParseException {
         assertThat(new Version("1")).isEqualByComparingTo(new Version("1.0.0"));
     }
 
@@ -117,7 +117,7 @@ public class VersionTest {
      * if passed another instance created with a more precise, but lesser, version string.
      */
     @Test
-    public void compareTo_withMorePreciseEarlierVersion_isGreaterThan() throws ParseException {
+    public void testCompareTo_withMorePreciseEarlierVersion_isGreaterThan() throws ParseException {
         assertThat(new Version("2")).isGreaterThan(new Version("1.0.0"));
     }
 
@@ -126,7 +126,7 @@ public class VersionTest {
      * if passed another instance created with a more precise, but larger, version string.
      */
     @Test
-    public void compareTo_withMorePreciseLaterVersion_isLessThan() throws ParseException {
+    public void testCompareTo_withMorePreciseLaterVersion_isLessThan() throws ParseException {
         assertThat(new Version("1")).isLessThan(new Version("1.0.1"));
     }
 }
