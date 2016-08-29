@@ -42,26 +42,21 @@ public class NewVersionBroadcastInterceptor implements Interceptor {
     public Response intercept(final Chain chain) throws IOException {
         final Response response = chain.proceed(chain.request());
 
-        final Version appLatestVersion;
-        final boolean isNewerVersionAvailable; {
+        final Version appLatestVersion; {
             final String appLatestVersionString = response.header(HEADER_APP_LATEST_VERSION);
             if (appLatestVersionString == null) {
                 appLatestVersion = null;
-                isNewerVersionAvailable = false;
             } else {
-                final Version currentVersion;
                 try {
                     appLatestVersion = new Version(appLatestVersionString);
-                    currentVersion = new Version(BuildConfig.VERSION_NAME);
                 } catch (ParseException e) {
-                    /* If the version numbers don't correspond to the
+                    /* If the version number doesn't correspond to the
                      * schema, then discard the data and just return the
                      * response.
                      */
                     logger.error(e);
                     return response;
                 }
-                isNewerVersionAvailable = appLatestVersion.compareTo(currentVersion) > 0;
             }
         }
 
@@ -70,11 +65,9 @@ public class NewVersionBroadcastInterceptor implements Interceptor {
 
         final boolean isUnsupported = response.code() == HttpStatus.UPGRADE_REQUIRED;
 
-        // If any of these properties is available and valid, then broadcast the
-        // event with the information we have.
-        if (isNewerVersionAvailable || isUnsupported || lastSupportedDate != null) {
-            NewVersionAvailableEvent.post(appLatestVersion, lastSupportedDate, isUnsupported);
-        }
+        // Pass these properties to the event broadcaster to validate and post if not
+        // already posted.
+        NewVersionAvailableEvent.post(appLatestVersion, lastSupportedDate, isUnsupported);
 
         return response;
     }

@@ -5,9 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import org.edx.mobile.BuildConfig;
 import org.edx.mobile.R;
+import org.edx.mobile.logger.Logger;
 import org.edx.mobile.util.Version;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
@@ -26,8 +29,9 @@ public class NewVersionAvailableEvent implements Comparable<NewVersionAvailableE
      * by the subscribers. To address this restriction, this class defined methods to mark instances
      * as having being consumed, which can be used by subscribers for this purpose.
      *
-     * If all the parameters are null or false, then it wouldn't be a valid event, and nothing would
-     * be posted on the event bus.
+     * If all the parameters are null or false (or in the case of the new version number parameter,
+     * lesser than the current build's version number), then it wouldn't be a valid event, and
+     * nothing would be posted on the event bus.
      *
      * @param newVersion        The version number of the latest release of the app.
      * @param lastSupportedDate The last date on which the current version of the app will be
@@ -44,7 +48,8 @@ public class NewVersionAvailableEvent implements Comparable<NewVersionAvailableE
         final NewVersionAvailableEvent event;
         try {
             event = new NewVersionAvailableEvent(newVersion, lastSupportedDate, isUnsupported);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // If the event is not valid, then do nothing.
             return;
         }
         final EventBus eventBus = EventBus.getDefault();
@@ -64,10 +69,16 @@ public class NewVersionAvailableEvent implements Comparable<NewVersionAvailableE
     private boolean isConsumed;
 
     /**
+     * The logger for this class.
+     */
+    private final Logger logger = new Logger(NewVersionAvailableEvent.class);
+
+    /**
      * Construct a new instance of NewVersionAvailableEvent. Any individual parameter can be null or
-     * false, but at last one needs to be non-null or true in order for the event to be valid. The
-     * constructor is private because the class is only supposed to be initialized from the
-     * {@link #post(Version, Date, boolean)} method.
+     * false, but at least one needs to be non-null or true (and in the case of the new version
+     * number parameter, also greater than the current build's version number) in order for the
+     * event to be valid. The constructor is private because the class is only supposed to be
+     * initialized from the {@link #post(Version, Date, boolean)} method.
      *
      * @param newVersion        The version number of the latest release of the app.
      * @param lastSupportedDate The last date on which the current version of the app will be
@@ -77,14 +88,40 @@ public class NewVersionAvailableEvent implements Comparable<NewVersionAvailableE
      *                          last supported date (the two properties may not be consistent with
      *                          each other due to wrong local clock time or an inconsistency in the
      *                          server configurations).
-     * @throws IllegalArgumentException if all of the parameters are {@code null} or {@code false}.
+     * @throws IllegalArgumentException If all of the parameters are {@code null} or {@code false}.
+     * @throws IllegalStateException    If the current build's version number doesn't correspond to
+     *                                  the schema.
      */
     private NewVersionAvailableEvent(@Nullable final Version newVersion,
                                      @Nullable final Date lastSupportedDate,
                                      final boolean isUnsupported)
             throws IllegalArgumentException {
-        if (!isUnsupported && lastSupportedDate == null && newVersion == null) {
-            throw new IllegalStateException("At least one parameter needs to be non-null or true");
+        if (!isUnsupported && lastSupportedDate == null) {
+            /* If the new version number parameter was also provided as a null
+             * value, or as a value that is not greater than the current
+             * build's version number, then throw an IllegalArgumentException.
+             */
+            if (newVersion == null) {
+                throw new IllegalArgumentException(
+                        "At least one parameter needs to be non-null or true.");
+            } else {
+                final Version currentVersion;
+                try {
+                    currentVersion = new Version(BuildConfig.VERSION_NAME);
+                } catch (ParseException e) {
+                    logger.error(e);
+                    /* Rethrow as an unchecked exception, because if the build version
+                     * number doesn't correspond to the schema, then this is a build
+                     * configuration error.
+                     */
+                    throw new IllegalStateException("The version number of the current" +
+                            "build doesn't correspond to the schema.", e);
+                }
+                if (newVersion.compareTo(currentVersion) <= 0) {
+                    throw new IllegalArgumentException(
+                            "The new update version is lesser than the current version.");
+                }
+            }
         }
         this.newVersion = newVersion;
         // Date is not immutable, so make a defensive copy of it.
