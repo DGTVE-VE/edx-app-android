@@ -226,7 +226,7 @@ public class NavigationFragment extends BaseFragment {
             if (profile.email != null) {
                 drawerNavigationBinding.emailTv.setText(profile.email);
             }
-            Map map = new HashMap<>();
+            Map<String,CharSequence> map = new HashMap<>();
             map.put("username", profile.name);
             map.put("email", profile.email);
             drawerNavigationBinding.userInfoLayout.setContentDescription(ResourceUtil.getFormattedString(getResources(), R.string.navigation_header, map));
