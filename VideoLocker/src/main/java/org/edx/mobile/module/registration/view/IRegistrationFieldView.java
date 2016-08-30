@@ -31,7 +31,7 @@ public interface IRegistrationFieldView {
     boolean setRawValue(String value);
 
     public static interface IActionListener {
-        void onClickAgreement(RegistrationAgreement agreement);
+        void onClickAgreement();
     }
 
     /**
@@ -66,14 +66,8 @@ public interface IRegistrationFieldView {
                 return new RegistrationSelectView(field, view);
             }
             else if (fieldType.equals(RegistrationFieldType.CHECKBOX)) {
-                if (field.getAgreement() != null) {
-                    View view = inflater.inflate(R.layout.view_register_agreement, null);
-                    return new RegistrationAgreementView(field, view);
-                }
-                else {
-                    View view = inflater.inflate(R.layout.view_register_checkbox, null);
-                    return new RegistrationCheckBoxView(field, view);
-                }
+                View view = inflater.inflate(R.layout.view_register_agreement, null);
+                return new RegistrationAgreementView(field, view);
             }
             else {
                 logger.warn(String.format("unknown field type %s found in RegistrationDescription, skipping it",

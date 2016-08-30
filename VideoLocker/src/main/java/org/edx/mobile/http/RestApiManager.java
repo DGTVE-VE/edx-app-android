@@ -203,6 +203,7 @@ public class RestApiManager implements IApi {
     @Override
     public RegistrationDescription getRegistrationDescription() throws Exception {
         Gson gson = new Gson();
+        // TODO
         InputStream in = context.getAssets().open("config/registration_form.json");
         RegistrationDescription form = gson.fromJson(new InputStreamReader(in), RegistrationDescription.class);
         logger.debug("picking up registration description (form) from assets, not from cache");

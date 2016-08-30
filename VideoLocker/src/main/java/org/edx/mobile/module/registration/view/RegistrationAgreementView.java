@@ -1,5 +1,6 @@
 package org.edx.mobile.module.registration.view;
 
+import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -31,13 +32,13 @@ class RegistrationAgreementView implements IRegistrationFieldView {
 
         // display label as HTML and text to be centered horizontally
         mInputView.setGravity(Gravity.CENTER_HORIZONTAL);
-        mInputView.setText(mField.getAgreement().getText());
-        mInputView.setOnClickListener(new View.OnClickListener() {
 
+        mInputView.setText(R.string.tos_and_honor);
+        mInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (actionListener != null) {
-                    actionListener.onClickAgreement(mField.getAgreement());
+                    actionListener.onClickAgreement();
                 }
             }
         });
