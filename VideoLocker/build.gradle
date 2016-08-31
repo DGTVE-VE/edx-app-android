@@ -131,6 +131,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
     compile 'com.google.android.gms:play-services-plus:9.4.0'
     compile 'com.google.android.gms:play-services-analytics:9.4.0'
+    compile 'com.google.android.gms:play-services-auth:9.4.0'
     compile 'com.google.code.gson:gson:2.4'
     compile 'de.greenrobot:eventbus:2.4.1'
     compile 'com.squareup.phrase:phrase:1.1.0'
