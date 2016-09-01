@@ -237,7 +237,6 @@
 
         <activity android:name=".view.dialog.WebViewDialogActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
             android:label=""/>
 
         <receiver android:name="org.edx.mobile.module.download.DownloadCompleteReceiver">
